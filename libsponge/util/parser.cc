@@ -33,7 +33,7 @@ T NetParser::_parse_int() {
 
     T ret = 0;
     for (size_t i = 0; i < len; i++) {
-        ret <<= 8;
+        ret = ret << 8;
         ret += uint8_t(_buffer.at(i));
     }
 
