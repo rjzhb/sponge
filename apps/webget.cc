@@ -2,23 +2,28 @@
 #include "util.hh"
 
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
 
 using namespace std;
 
 void get_URL(const string &host, const string &path) {
-    // Your code here.
+    Address address(host, "http");
+    TCPSocket client;
 
-    // You will need to connect to the "http" service on
-    // the computer whose name is in the "host" string,
-    // then request the URL path given in the "path" string.
+    client.connect(address);
 
-    // Then you'll need to print out everything the server sends back,
-    // (not just one call to read() -- everything) until you reach
-    // the "eof" (end of file).
+    //对url发送request
+    string req = "GET " + path + " HTTP/1.0\r\n" + "Host: " + host +":80\r\n\r\n";
+    // 合成请求报文
+    send(client.fd_num(), req.c_str(), req.size(), 0);
+    //输出sends back的字符
+    while (!client.eof()) {
+        string str = client.read();
+        cout << str;
+    }
 
-    cerr << "Function called: get_URL(" << host << ", " << path << ").\n";
-    cerr << "Warning: get_URL() has not been implemented yet.\n";
+    client.close();
 }
 
 int main(int argc, char *argv[]) {
