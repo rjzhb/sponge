@@ -11,6 +11,7 @@ void DUMMY_CODE(Targs &&... /* unused */) {}
 using namespace std;
 
 void TCPReceiver::segment_received(const TCPSegment &seg) {
+    _capacity = 0;
     DUMMY_CODE(seg);
 }
 
