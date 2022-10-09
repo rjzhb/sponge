@@ -1,0 +1,28 @@
+{
+    "files.associations": {
+        "iostream": "cpp",
+        "*.tcc": "cpp",
+        "exception": "cpp",
+        "memory_resource": "cpp",
+        "fstream": "cpp",
+        "iosfwd": "cpp",
+        "new": "cpp",
+        "ostream": "cpp",
+        "sstream": "cpp",
+        "stop_token": "cpp",
+        "streambuf": "cpp",
+        "*.rh": "cpp",
+        "string_view": "cpp",
+        "cstring": "cpp",
+        "string": "cpp",
+        "iomanip": "cpp",
+        "istream": "cpp",
+        "stdexcept": "cpp",
+        "system_error": "cpp",
+        "typeinfo": "cpp",
+        "variant": "cpp",
+        "*.inc": "cpp",
+        "array": "cpp",
+        "chrono": "cpp"
+    }
+}
