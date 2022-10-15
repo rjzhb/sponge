@@ -27,9 +27,6 @@ void TCPReceiver::segment_received(const TCPSegment &seg) {
     size_t checkpoint = _reassembler.start_pos() - 1;
     //解除包装
     uint32_t stream_index = (header.syn ? 0 : -1) + unwrap(header.seqno, ISN, checkpoint);
-    if (stream_index < 0) {
-        return;
-    }
     // push data
     if (init_isn_) {
         _reassembler.push_substring(seg.payload().copy(), stream_index, is_fin);

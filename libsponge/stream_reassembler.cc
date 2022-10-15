@@ -13,7 +13,9 @@ void DUMMY_CODE(Targs &&.../* unused */) {}
 using namespace std;
 
 StreamReassembler::StreamReassembler(const size_t capacity)
-    : _output(capacity), _capacity(capacity), start_pos_(0), end_pos_(-1), unassembled_bytes_(0) {}
+    : _output(capacity), _capacity(capacity), start_pos_(0), end_pos_(-1), unassembled_bytes_(0) {
+    str_map_.clear();
+    }
 
 //! \details This function accepts a substring (aka a segment) of bytes,
 //! possibly out-of-order, from the logical stream, and assembles any newly

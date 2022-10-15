@@ -28,6 +28,8 @@ ByteStream::ByteStream(const size_t capacity) {
 
 ByteStream::~ByteStream() { delete[] buffer_; }
 
+
+
 size_t ByteStream::write(const string &data) {
     size_t have_write_size = 0;
     size_t i = 0;

@@ -14,10 +14,10 @@ class StreamReassembler {
   private:
     // Your code here -- add private members as necessary.
     //用map存储字符串
-    std::unordered_map<size_t, char> str_map_;
-    std::set<size_t> index_set_;
+    std::unordered_map<size_t, char> str_map_{};
+    std::set<size_t> index_set_{};
     ByteStream _output;  //!< The reassembled in-order byte stream
-    size_t _capacity;    //!< The maximum number of bytes
+    size_t _capacity{0};    //!< The maximum number of bytes
     //需要放入byteStream的最左边字符
     size_t start_pos_ = 0;
     size_t end_pos_ = 0;

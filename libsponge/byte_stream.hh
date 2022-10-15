@@ -11,16 +11,16 @@
 class ByteStream {
   private:
     // Your code here -- add private members as necessary.
-    size_t capacity_;
+    size_t capacity_{0};
 
-    size_t write_count_;
-    size_t read_count_;
+    size_t write_count_{0};
+    size_t read_count_{0};
 
     bool end_write_{};
-    char *buffer_;
+    char *buffer_{};
 
-    mutable size_t read_pointer_;
-    mutable size_t write_pointer_;
+    mutable size_t read_pointer_{0};
+    mutable size_t write_pointer_{0};
     // Hint: This doesn't need to be a sophisticated data structure at
     // all, but if any of your tests are taking longer than a second,
     // that's a sign that you probably want to keep exploring
@@ -31,6 +31,10 @@ class ByteStream {
   public:
     //! Construct a stream with room for `capacity` bytes.
     ByteStream(const size_t capacity);
+
+    ByteStream(const ByteStream& other);
+
+    ByteStream& operator=(const ByteStream& other);
 
     ~ByteStream();
     //! \name "Input" interface for the writer
