@@ -32,19 +32,17 @@ void StreamReassembler::push_substring(const string &data, const size_t index, c
     size_t k = index;
     for (size_t i = 0; i < data.size(); i++, k++) {
         //超过了当前最大限制容量
-        if (unassembled_bytes_ + _output.buffer_size() > _capacity) {
+        if (unassembled_bytes_ + _output.buffer_size() >= _capacity) {
             break;
         }
 
         if (k >= start_pos_) {
+            str_map_[k] = data[i];
+            index_set_.insert(k);
             //如果当前插入的就是需要找的start_pos_
             if (k == start_pos_) {
                 if (_output.buffer_size() >= _capacity) {
                     continue;
-                }
-                //如果之前map里存在这个key，那就删除原先map的key，这是一种假删除
-                if (str_map_.find(k) != str_map_.end()) {
-                    unassembled_bytes_--;
                 }
 
                 string write_str = "";
@@ -53,6 +51,9 @@ void StreamReassembler::push_substring(const string &data, const size_t index, c
                 size_t write_size = _output.write(write_str);
                 //起点+1
                 start_pos_++;
+                //删除key
+                str_map_.erase(k);
+                index_set_.erase(k);
                 //达到终结符
                 if (write_size > 0 && k == end_pos_) {
                     _output.end_input();
@@ -60,40 +61,38 @@ void StreamReassembler::push_substring(const string &data, const size_t index, c
                 }
                 continue;
             }
-
-            //否则插入进待组装列表里
-            //如果之前的map找不到这个key
-            if (str_map_.find(k) == str_map_.end()) {
-                unassembled_bytes_++;
-            }
-            str_map_[k] = data[i];
         }
     }
 
+    size_t idx = start_pos_;
     //二次遍历map，放入ByteStream
-    for (auto iter = str_map_.begin(); iter != str_map_.end(); iter++) {
-        size_t key = iter->first;
-        char value = iter->second;
-        if (key == start_pos_) {
-            string write_str = "";
-            write_str.push_back(value);
-            //写入缓冲区
-            size_t write_size = _output.write(write_str);
-
-            //达到终结符
-            if (write_size > 0 && key == end_pos_) {
-                _output.end_input();
-                return;
-            }
-
-            //起点+1
-            start_pos_++;
-            //删除此key,不真正删除，只是以后会忽略掉
-            unassembled_bytes_--;
+    while (str_map_.count(idx)) {
+        if (str_map_.size() + _output.buffer_size() >= _capacity) {
+            size_t max_index = *index_set_.end();
+            index_set_.erase(max_index);
+            str_map_.erase(max_index);
         }
+
+        size_t key = idx;
+        char value = str_map_[idx];
+        string write_str = "";
+        write_str.push_back(value);
+        //写入缓冲区
+        size_t write_size = _output.write(write_str);
+
+        //达到终结符
+        if (write_size > 0 && key == end_pos_) {
+            _output.end_input();
+            return;
+        }
+
+        //起点+1
+        start_pos_++;
+        //删除此key
+        str_map_.erase(idx++);
     }
 }
 
-size_t StreamReassembler::unassembled_bytes() const { return unassembled_bytes_; }
+size_t StreamReassembler::unassembled_bytes() const { return str_map_.size(); }
 
 bool StreamReassembler::empty() const { return str_map_.size() == 0; }

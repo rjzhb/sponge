@@ -16,7 +16,9 @@
 class TCPReceiver {
     //! Our data structure for re-assembling bytes.
     StreamReassembler _reassembler;
-
+    WrappingInt32 ISN{0};
+    bool init_fin_{0};
+    bool init_isn_{0};
     //! The maximum number of bytes we'll store.
     size_t _capacity;
 

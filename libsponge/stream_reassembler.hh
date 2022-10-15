@@ -4,7 +4,8 @@
 #include "byte_stream.hh"
 
 #include <cstdint>
-#include <map>
+#include <unordered_map>
+#include <set>
 #include <string>
 
 //! \brief A class that assembles a series of excerpts from a byte stream (possibly out of order,
@@ -13,7 +14,8 @@ class StreamReassembler {
   private:
     // Your code here -- add private members as necessary.
     //用map存储字符串
-    std::map<size_t, char> str_map_;
+    std::unordered_map<size_t, char> str_map_;
+    std::set<size_t> index_set_;
     ByteStream _output;  //!< The reassembled in-order byte stream
     size_t _capacity;    //!< The maximum number of bytes
     //需要放入byteStream的最左边字符
@@ -42,6 +44,9 @@ class StreamReassembler {
     const ByteStream &stream_out() const { return _output; }
     ByteStream &stream_out() { return _output; }
     //!@}
+
+    //用于获得checkpoint
+    size_t start_pos() const { return start_pos_; }
 
     //! The number of bytes in the substrings stored but not yet reassembled
     //!
