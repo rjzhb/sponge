@@ -23,6 +23,81 @@
         "variant": "cpp",
         "*.inc": "cpp",
         "array": "cpp",
-        "chrono": "cpp"
-    }
+        "chrono": "cpp",
+        "optional": "cpp",
+        "any": "cpp",
+        "atomic": "cpp",
+        "bit": "cpp",
+        "cctype": "cpp",
+        "clocale": "cpp",
+        "cmath": "cpp",
+        "compare": "cpp",
+        "complex": "cpp",
+        "concepts": "cpp",
+        "condition_variable": "cpp",
+        "cstdarg": "cpp",
+        "cstddef": "cpp",
+        "cstdint": "cpp",
+        "cstdio": "cpp",
+        "cstdlib": "cpp",
+        "ctime": "cpp",
+        "cwchar": "cpp",
+        "cwctype": "cpp",
+        "deque": "cpp",
+        "list": "cpp",
+        "map": "cpp",
+        "set": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp",
+        "vector": "cpp",
+        "algorithm": "cpp",
+        "functional": "cpp",
+        "iterator": "cpp",
+        "memory": "cpp",
+        "numeric": "cpp",
+        "random": "cpp",
+        "ratio": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp",
+        "future": "cpp",
+        "initializer_list": "cpp",
+        "limits": "cpp",
+        "mutex": "cpp",
+        "numbers": "cpp",
+        "semaphore": "cpp",
+        "thread": "cpp",
+        "cfenv": "cpp",
+        "cinttypes": "cpp"
+    },
+    "editor.tokenColorCustomizations": {
+        "comments": {
+            "foreground": "#0e6e0e",
+            "fontStyle": ""
+        },
+        "textMateRules": [
+            {
+                "scope": "googletest.failed",
+                "settings": {
+                    "foreground": "#f00"
+                }
+            },
+            {
+                "scope": "googletest.passed",
+                "settings": {
+                    "foreground": "#0f0"
+                }
+            },
+            {
+                "scope": "googletest.run",
+                "settings": {
+                    "foreground": "#0f0"
+                }
+            }
+        ]
+    },
+    "gtest-adapter.debugConfig": [
+        "C/C++: clang++ 生成和调试活动文件"
+    ],
+    "C_Cpp.errorSquiggles": "Enabled"
 }
