@@ -12,8 +12,6 @@ CMake Deprecation Warning at CMakeLists.txt:1 (cmake_minimum_required):
 --     -DCMAKE_BUILD_TYPE=Debug     -- better debugging experience in gdb
 --     -DCMAKE_BUILD_TYPE=RelASan   -- full optimizations plus address and undefined-behavior sanitizers
 --     -DCMAKE_BUILD_TYPE=DebugASan -- debug plus sanitizers
--- Found Doxygen: /usr/bin/doxygen (found version "1.9.3") found components: doxygen missing components: dot
--- Found clang-tidy version 1
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /home/rjzhb/Project/sponge/cmake-build-debug
