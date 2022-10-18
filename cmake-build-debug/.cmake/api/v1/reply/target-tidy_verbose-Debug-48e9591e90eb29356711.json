@@ -1,0 +1,366 @@
+{
+	"backtrace" : 3,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_custom_target",
+			"include"
+		],
+		"files" : 
+		[
+			"etc/clang_tidy.cmake",
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 12,
+				"parent" : 0
+			},
+			{
+				"file" : 0,
+				"parent" : 1
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 32,
+				"parent" : 2
+			}
+		]
+	},
+	"dependencies" : 
+	[
+		{
+			"id" : "tidy_apps__bidirectional_stream_copy.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_apps__tcp_benchmark.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_apps__tcp_ipv4.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_apps__tcp_native.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_apps__tcp_udp.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_apps__tun.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_apps__udp_tcpdump.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_apps__webget.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_doctests__address_dt.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_doctests__address_example_1.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_doctests__address_example_2.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_doctests__address_example_3.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_doctests__parser_dt.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_doctests__parser_example.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_doctests__socket_dt.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_doctests__socket_example_1.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_doctests__socket_example_2.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_doctests__socket_example_3.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_libsponge__byte_stream.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_libsponge__stream_reassembler.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_libsponge__tcp_connection.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tcp_helpers__fd_adapter.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tcp_helpers__ipv4_datagram.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tcp_helpers__ipv4_header.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tcp_helpers__tcp_header.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tcp_helpers__tcp_over_ip.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tcp_helpers__tcp_segment.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tcp_helpers__tcp_sponge_socket.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tcp_helpers__tcp_state.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tcp_helpers__tuntap_adapter.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_libsponge__tcp_receiver.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_libsponge__tcp_sender.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_util__address.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_util__buffer.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_util__eventloop.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_util__file_descriptor.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_util__parser.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_util__socket.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_util__tun.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_util__util.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_libsponge__wrapping_integers.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__byte_stream_capacity.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__byte_stream_construction.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__byte_stream_many_writes.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__byte_stream_one_write.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__byte_stream_test_harness.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__byte_stream_two_writes.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__fsm_ack_rst.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__fsm_ack_rst_relaxed.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__fsm_ack_rst_win.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__fsm_ack_rst_win_relaxed.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__fsm_active_close.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__fsm_connect.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__fsm_connect_relaxed.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__fsm_listen.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__fsm_listen_relaxed.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__fsm_loopback.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__fsm_loopback_win.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__fsm_passive_close.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__fsm_reorder.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__fsm_retx.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__fsm_retx_relaxed.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__fsm_retx_win.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__fsm_stream_reassembler_cap.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__fsm_stream_reassembler_dup.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__fsm_stream_reassembler_holes.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__fsm_stream_reassembler_many.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__fsm_stream_reassembler_overlapping.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__fsm_stream_reassembler_seq.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__fsm_stream_reassembler_single.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__fsm_stream_reassembler_win.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__fsm_winsize.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__ipv4_parser.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__net_interface.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__network_interface_test_harness.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__recv_close.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__recv_connect.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__recv_reorder.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__recv_special.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__recv_transmit.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__recv_window.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__send_ack.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__send_close.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__send_connect.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__send_equivalence_checker.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__send_extra.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__send_retx.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__send_transmit.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__send_window.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__tcp_fsm_test_harness.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__tcp_parser.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__wrapping_integers_cmp.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__wrapping_integers_roundtrip.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__wrapping_integers_unwrap.cc::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "tidy_tests__wrapping_integers_wrap.cc::@6890427a1f51a3e7e1df"
+		}
+	],
+	"id" : "tidy_verbose::@6890427a1f51a3e7e1df",
+	"name" : "tidy_verbose",
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				1
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 3,
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/CMakeFiles/tidy_verbose",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/CMakeFiles/tidy_verbose.rule",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "UTILITY"
+}
