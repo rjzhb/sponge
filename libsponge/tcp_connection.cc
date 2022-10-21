@@ -56,18 +56,6 @@ void TCPConnection::send_segments() {
     }
 }
 
-void TCPConnection::send_rst() {
-    _sender.send_empty_segment();
-    while (!_sender.segments_out().empty()) {
-        TCPSegment segment = _sender.segments_out().front();
-        segment.header().rst = 1;
-        segment.header().win = _receiver.window_size();
-        segment.header().ackno = _receiver.ackno().value();
-        _segments_out.push(segment);
-        _sender.segments_out().pop();
-    }
-}
-
 void TCPConnection::segment_received(const TCPSegment &seg) {
     if (!active()) {
         return;
@@ -216,15 +204,10 @@ void TCPConnection::tick(const size_t ms_since_last_tick) {
 
     if (_sender.tick(ms_since_last_tick)) {
         if (_sender.consecutive_retransmissions() > TCPConfig::MAX_RETX_ATTEMPTS) {
-            _sender.stream_in().set_error();
-            _receiver.stream_out().set_error();
-            active_ = false;
-            _linger_after_streams_finish = false;
-            send_rst();
+            set_rst();
             return;
         }
-        _segments_out.push(_sender.segments_out().front());
-        _sender.segments_out().pop();
+        send_segments();
     }
 
     test_end();
@@ -253,11 +236,8 @@ void TCPConnection::connect() {
     active_ = true;
     // 三次握手
     _sender.fill_window();
-    // 初始化时间变量
-    time_last_segment_received_ = 0;
     // 发送syn报文段
-    _segments_out.push(_sender.segments_out().front());
-    _sender.segments_out().pop();
+    send_segments();
     // 当前状态转移
     state_ = TCPState::State::SYN_SENT;
 }
@@ -280,8 +260,9 @@ void TCPConnection::set_rst() {
     _linger_after_streams_finish = false;
     _sender.stream_in().set_error();
     _receiver.stream_out().set_error();
-    if (state_ == TCPState::State::ESTABLISHED)
-        fill_window();
+    if (state_ == TCPState::State::ESTABLISHED) {
+        send_segments();
+    }
 }
 
 TCPConnection::~TCPConnection() {

@@ -82,15 +82,12 @@ class TCPConnection {
     //! Called when a new segment has been received from the network
     void segment_received(const TCPSegment &seg);
 
-    void send_segment(const TCPSegment &seg);
 
     void send_segments();
 
     void fill_queue(std::queue<TCPSegment> &segments_out);
     //! Called periodically when time elapses
     void tick(const size_t ms_since_last_tick);
-
-    void send_rst();
     //! \brief TCPSegments that the TCPConnection has enqueued for transmission.
     //! \note The owner or operating system will dequeue these and
     //! put each one into the payload of a lower-layer datagram (usually Internet datagrams (IP),
