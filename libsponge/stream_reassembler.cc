@@ -1,5 +1,7 @@
 #include "stream_reassembler.hh"
 
+#include <algorithm>
+
 // Dummy implementation of a stream reassembler.
 
 // For Lab 1, please replace with a real implementation that passes the
@@ -8,93 +10,68 @@
 // You will need to add private members to the class declaration in `stream_reassembler.hh`
 
 template <typename... Targs>
-void DUMMY_CODE(Targs &&.../* unused */) {}
+void DUMMY_CODE(Targs &&... /* unused */) {}
 
 using namespace std;
 
-StreamReassembler::StreamReassembler(const size_t capacity)
-    : _output(capacity), _capacity(capacity), start_pos_(0), end_pos_(-1), unassembled_bytes_(0) {
-    str_map_.clear();
-    }
+StreamReassembler::StreamReassembler(const size_t capacity) :
+    _output(capacity), _capacity(capacity), _map(), _set(), _idx_ptr(0), _idx_end(1e9){
+
+}
 
 //! \details This function accepts a substring (aka a segment) of bytes,
 //! possibly out-of-order, from the logical stream, and assembles any newly
 //! contiguous substrings and writes them into the output stream in order.
 void StreamReassembler::push_substring(const string &data, const size_t index, const bool eof) {
-    //对空串特殊处理
-    if (data.size() == 0 && eof) {
-        _output.end_input();
-        return;
+    size_t end = index + data.size();
+
+    if(eof) _idx_end = end;
+    //当前字符超过容量
+    if(_idx_ptr + _capacity <= index) return;
+
+    if(_idx_ptr >= _idx_end) _output.end_input();
+    if(end <= _idx_ptr) return;
+    /**/
+    size_t t;
+    if(_idx_ptr >= index) t = _idx_ptr - index;
+    else t = 0;
+    for(size_t i = t; i < data.size(); i ++){
+        if(i + index >= _idx_end) break;
+        _map[i + index] = data[i];
+        _set.insert(i + index);
+
     }
-
-    if (eof && data.size() > 0) {
-        end_pos_ = index + data.size() - 1;
+    std::string res;
+    size_t idx = _idx_ptr;
+    while(_map.count(idx)){
+        if(idx >= _idx_end) break;
+        //超过 _capacity 容量了 ，不能直接返回， 需要判断map最后一个位置和当前位置哪一个比较大， 再判断是否需要删除
+        /*if(_map.size() + _output.buffer_size() > _capacity){
+            size_t temp = * _set.rbegin();
+            if(temp > idx){
+                _map.erase(temp);
+                _set.erase(temp);
+            } else break;
+        }*/
+        res += _map[idx ++ ];
     }
-
-    size_t k = index;
-    for (size_t i = 0; i < data.size(); i++, k++) {
-        //超过了当前最大限制容量
-        if (unassembled_bytes_ + _output.buffer_size() >= _capacity) {
-            break;
-        }
-
-        if (k >= start_pos_) {
-            str_map_[k] = data[i];
-            index_set_.insert(k);
-            //如果当前插入的就是需要找的start_pos_
-            if (k == start_pos_) {
-                if (_output.buffer_size() >= _capacity) {
-                    continue;
-                }
-
-                string write_str = "";
-                write_str.push_back(data[i]);
-                //写入 缓冲区
-                size_t write_size = _output.write(write_str);
-                //起点+1
-                start_pos_++;
-                //删除key
-                str_map_.erase(k);
-                index_set_.erase(k);
-                //达到终结符
-                if (write_size > 0 && k == end_pos_) {
-                    _output.end_input();
-                    return;
-                }
-                continue;
-            }
-        }
+    size_t ret = _output.write(res);
+    for(size_t i = 0; i < ret; i ++ ){
+        _map.erase(_idx_ptr + i);
+        _set.erase(_idx_ptr + i);
     }
-
-    size_t idx = start_pos_;
-    //二次遍历map，放入ByteStream
-    while (str_map_.count(idx)) {
-        if (str_map_.size() + _output.buffer_size() >= _capacity) {
-            size_t max_index = *index_set_.end();
-            index_set_.erase(max_index);
-            str_map_.erase(max_index);
-        }
-
-        size_t key = idx;
-        char value = str_map_[idx];
-        string write_str = "";
-        write_str.push_back(value);
-        //写入缓冲区
-        size_t write_size = _output.write(write_str);
-
-        //达到终结符
-        if (write_size > 0 && key == end_pos_) {
-            _output.end_input();
-            return;
-        }
-
-        //起点+1
-        start_pos_++;
-        //删除此key
-        str_map_.erase(idx++);
+    _idx_ptr += ret;
+    //删除超过字符容量的字符
+    idx = _idx_ptr;
+    while(_map.count(idx + _capacity)){
+        _map.erase(idx);
+        _set.erase(idx ++ );
     }
+    if(_idx_ptr >= _idx_end) _output.end_input();
 }
 
-size_t StreamReassembler::unassembled_bytes() const { return str_map_.size(); }
 
-bool StreamReassembler::empty() const { return str_map_.size() == 0; }
+size_t StreamReassembler::unassembled_bytes() const { return _map.size(); }
+
+//当没有输入状态等待的时候返回 true
+bool StreamReassembler::empty() const { return unassembled_bytes() == 0; }

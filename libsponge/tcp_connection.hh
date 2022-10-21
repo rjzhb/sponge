@@ -52,7 +52,7 @@ class TCPConnection {
     //! \brief Shut down the outbound byte stream (still allows reading incoming data)
     void end_input_stream();
     //!@}
-    void fill_window();
+    void fill_window(bool should_reply);
     //! \name "Output" interface for the reader
     //!@{
     void test_end();
@@ -82,8 +82,7 @@ class TCPConnection {
     //! Called when a new segment has been received from the network
     void segment_received(const TCPSegment &seg);
 
-
-    void send_segments();
+    void send_segments(bool should_reply);
 
     void fill_queue(std::queue<TCPSegment> &segments_out);
     //! Called periodically when time elapses

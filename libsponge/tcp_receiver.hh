@@ -13,21 +13,38 @@
 //! Receives and reassembles segments into a ByteStream, and computes
 //! the acknowledgment number and window size to advertise back to the
 //! remote TCPSender.
+/*
+ * TCPReceiver 考虑报文序号不够的问题， 因为 2 ^ 32 Byte = 4 GB 表示的内容是不够的
+ * 还需要考虑开始序号的问题 ，我们希望是一个随机的 32 位 数字的信号，
+ *
+ * */
 class TCPReceiver {
     //! Our data structure for re-assembling bytes.
     StreamReassembler _reassembler;
-    WrappingInt32 ISN{0};
-    bool init_fin_{0};
-    bool init_isn_{0};
+
     //! The maximum number of bytes we'll store.
     size_t _capacity;
+
+    uint32_t _isn;
+    bool _syn = false;
+    bool _fin = false;
 
   public:
     //! \brief Construct a TCP receiver
     //!
     //! \param capacity the maximum number of bytes that the receiver will
     //!                 store in its buffers at any give time.
-    TCPReceiver(const size_t capacity) : _reassembler(capacity), _capacity(capacity) {}
+
+
+    bool get_syn(){
+        return _syn;
+    }
+
+    bool get_fin(){
+        return _fin;
+    }
+
+    TCPReceiver(const size_t capacity) : _reassembler(capacity), _capacity(capacity), _isn(1){ }
 
     //! \name Accessors to provide feedback to the remote TCPSender
     //!@{
@@ -49,6 +66,10 @@ class TCPReceiver {
     //! the first byte that falls after the window (and will not be
     //! accepted by the receiver) and (b) the sequence number of the
     //! beginning of the window (the ackno).
+    /*
+     * 操作上：容量减去TCPReceiver在其字节流中保存的字节数（那些已重新组装但未消耗的字节）。
+     *形式上：（a）落在窗口之后的第一个字节的序列号（接收器不会接受）和（b）窗口开始的序列号之间的差异（ackno）
+     * */
     size_t window_size() const;
     //!@}
 
@@ -66,6 +87,3 @@ class TCPReceiver {
 };
 
 #endif  // SPONGE_LIBSPONGE_TCP_RECEIVER_HH
-
-
-
