@@ -182,115 +182,115 @@ void TCPConnection::segment_received(const TCPSegment &seg) {
         } else {
             fill_window();
         }
-
-        test_end();
     }
+    test_end();
+}
 
-    bool TCPConnection::active() const { return active_; }
+bool TCPConnection::active() const { return active_; }
 
-    size_t TCPConnection::write(const string &data) {
-        size_t len = data.size();
-        // 先写入_sender里面的bytestream
-        size_t write_len = _sender.stream_in().write(std::move(data));
-        // 判断是否写完
-        if (write_len == len) {
-            _sender.stream_in().end_input();
-        }
-        fill_window();
-        test_end();
-        return write_len;
-    }
-
-    //! \param[in] ms_since_last_tick number of milliseconds since the last call to this method
-    void TCPConnection::tick(const size_t ms_since_last_tick) {
-        time_last_segment_received_ += ms_since_last_tick;
-
-        if (state_ == TCPState::State::TIME_WAIT) {
-            time_wait_start_ += ms_since_last_tick;
-            if (time_wait_start_ >= TCPConfig::TIMEOUT_DFLT * 10) {
-                active_ = false;
-                _linger_after_streams_finish = false;
-                state_ = TCPState::State::CLOSED;
-            }
-        }
-
-        if (_sender.tick(ms_since_last_tick)) {
-            if (_sender.consecutive_retransmissions() > TCPConfig::MAX_RETX_ATTEMPTS) {
-                _sender.stream_in().set_error();
-                _receiver.stream_out().set_error();
-                active_ = false;
-                _linger_after_streams_finish = false;
-                send_rst();
-                return;
-            }
-            _segments_out.push(_sender.segments_out().front());
-            _sender.segments_out().pop();
-        }
-
-        test_end();
-    }
-
-    void TCPConnection::end_input_stream() {
+size_t TCPConnection::write(const string &data) {
+    size_t len = data.size();
+    // 先写入_sender里面的bytestream
+    size_t write_len = _sender.stream_in().write(std::move(data));
+    // 判断是否写完
+    if (write_len == len) {
         _sender.stream_in().end_input();
+    }
+    fill_window();
+    test_end();
+    return write_len;
+}
 
-        if (state_ == TCPState::State::ESTABLISHED) {
-            fill_window();
-            state_ = TCPState::State::FIN_WAIT_1;
-        } else if (state_ == TCPState::State::CLOSE_WAIT) {
-            fill_window();
-            state_ = TCPState::State::LAST_ACK;
-        } else if (state_ == TCPState::State::LISTEN) {
-            state_ = TCPState::State::CLOSED;
-        } else if (state_ == TCPState::State::SYN_SENT) {
+//! \param[in] ms_since_last_tick number of milliseconds since the last call to this method
+void TCPConnection::tick(const size_t ms_since_last_tick) {
+    time_last_segment_received_ += ms_since_last_tick;
+
+    if (state_ == TCPState::State::TIME_WAIT) {
+        time_wait_start_ += ms_since_last_tick;
+        if (time_wait_start_ >= TCPConfig::TIMEOUT_DFLT * 10) {
+            active_ = false;
+            _linger_after_streams_finish = false;
             state_ = TCPState::State::CLOSED;
         }
-
-        test_end();
     }
 
-    void TCPConnection::connect() {
-        // Initiate a connection by sending a SYN segment.
-        active_ = true;
-        // 三次握手
-        _sender.fill_window();
-        // 初始化时间变量
-        time_last_segment_received_ = 0;
-        // 发送syn报文段
+    if (_sender.tick(ms_since_last_tick)) {
+        if (_sender.consecutive_retransmissions() > TCPConfig::MAX_RETX_ATTEMPTS) {
+            _sender.stream_in().set_error();
+            _receiver.stream_out().set_error();
+            active_ = false;
+            _linger_after_streams_finish = false;
+            send_rst();
+            return;
+        }
         _segments_out.push(_sender.segments_out().front());
         _sender.segments_out().pop();
-        // 当前状态转移
-        state_ = TCPState::State::SYN_SENT;
     }
 
-    void TCPConnection::test_end() {
-        if (_receiver.stream_out().input_ended() && !_sender.stream_in().eof() && _sender.next_seqno_absolute() > 0) {
-            _linger_after_streams_finish = false;
-        } else if (_receiver.stream_out().eof() && _sender.stream_in().eof() && unassembled_bytes() == 0 &&
-                   bytes_in_flight() == 0 && state_ == TCPState::State::CLOSE_WAIT) {
-            if (!_linger_after_streams_finish)
-                active_ = false;
-            else if (time_last_segment_received_ >= 10 * _cfg.rt_timeout)
-                active_ = false;
-        }
+    test_end();
+}
+
+void TCPConnection::end_input_stream() {
+    _sender.stream_in().end_input();
+
+    if (state_ == TCPState::State::ESTABLISHED) {
+        fill_window();
+        state_ = TCPState::State::FIN_WAIT_1;
+    } else if (state_ == TCPState::State::CLOSE_WAIT) {
+        fill_window();
+        state_ = TCPState::State::LAST_ACK;
+    } else if (state_ == TCPState::State::LISTEN) {
+        state_ = TCPState::State::CLOSED;
+    } else if (state_ == TCPState::State::SYN_SENT) {
+        state_ = TCPState::State::CLOSED;
     }
 
-    void TCPConnection::set_rst() {
-        active_ = false;
-        rst_ = true;
+    test_end();
+}
+
+void TCPConnection::connect() {
+    // Initiate a connection by sending a SYN segment.
+    active_ = true;
+    // 三次握手
+    _sender.fill_window();
+    // 初始化时间变量
+    time_last_segment_received_ = 0;
+    // 发送syn报文段
+    _segments_out.push(_sender.segments_out().front());
+    _sender.segments_out().pop();
+    // 当前状态转移
+    state_ = TCPState::State::SYN_SENT;
+}
+
+void TCPConnection::test_end() {
+    if (_receiver.stream_out().input_ended() && !_sender.stream_in().eof() && _sender.next_seqno_absolute() > 0) {
         _linger_after_streams_finish = false;
-        _sender.stream_in().set_error();
-        _receiver.stream_out().set_error();
-        if (state_ == TCPState::State::ESTABLISHED)
-            fill_window();
+    } else if (_receiver.stream_out().eof() && _sender.stream_in().eof() && unassembled_bytes() == 0 &&
+               bytes_in_flight() == 0 && state_ == TCPState::State::CLOSE_WAIT) {
+        if (!_linger_after_streams_finish)
+            active_ = false;
+        else if (time_last_segment_received_ >= 10 * _cfg.rt_timeout)
+            active_ = false;
     }
+}
 
-    TCPConnection::~TCPConnection() {
-        try {
-            if (active() || state_ == TCPState::State::CLOSED) {
-                set_rst();
-                active_ = false;
-            }
-        } catch (const exception &e) {
-            std::cerr << "Exception destructing TCP FSM: " << e.what() << std::endl;
+void TCPConnection::set_rst() {
+    active_ = false;
+    rst_ = true;
+    _linger_after_streams_finish = false;
+    _sender.stream_in().set_error();
+    _receiver.stream_out().set_error();
+    if (state_ == TCPState::State::ESTABLISHED)
+        fill_window();
+}
+
+TCPConnection::~TCPConnection() {
+    try {
+        if (active() || state_ == TCPState::State::CLOSED) {
+            set_rst();
+            active_ = false;
         }
+    } catch (const exception &e) {
+        std::cerr << "Exception destructing TCP FSM: " << e.what() << std::endl;
     }
+}
