@@ -177,13 +177,8 @@ void TCPConnection::segment_received(const TCPSegment &seg) {
 bool TCPConnection::active() const { return active_; }
 
 size_t TCPConnection::write(const string &data) {
-    size_t len = data.size();
     // 先写入_sender里面的bytestream
     size_t write_len = _sender.stream_in().write(std::move(data));
-    // 判断是否写完
-    if (write_len == len) {
-        _sender.stream_in().end_input();
-    }
     fill_window();
     test_end();
     return write_len;

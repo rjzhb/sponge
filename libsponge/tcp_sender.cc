@@ -35,7 +35,7 @@ void TCPSender::fill_window() {
         TCPHeader &header = segment.header();
         header.syn = true;
         header.seqno = _isn;
-        _next_seqno++;
+        _next_seqno ++;
         _segments_out.push(segment);
         outstanding_segments_out_.push(segment);
         bytes_in_flight_++;
@@ -114,7 +114,6 @@ void TCPSender::fill_window() {
 //! \param ackno The remote receiver's ackno (acknowledgment number)
 //! \param window_size The remote receiver's advertised window size
 bool TCPSender::ack_received(const WrappingInt32 ackno, const uint16_t window_size) {
-    _window_size = window_size;
 
     uint64_t absolute_ackno = unwrap(ackno, _isn, _stream.bytes_read());
     // 攻击的目的，直接忽略
@@ -122,6 +121,7 @@ bool TCPSender::ack_received(const WrappingInt32 ackno, const uint16_t window_si
         return false;
     }
 
+    _window_size = window_size;
     bool is_modify = false;
     while (!outstanding_segments_out_.empty()) {
         TCPSegment segment = outstanding_segments_out_.front();
