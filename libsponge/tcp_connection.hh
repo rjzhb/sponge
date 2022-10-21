@@ -13,13 +13,27 @@ class TCPConnection {
     TCPReceiver _receiver{_cfg.recv_capacity};
     TCPSender _sender{_cfg.send_capacity, _cfg.rt_timeout, _cfg.fixed_isn};
 
-    //! outbound queue of segments that the TCPConnection wants sent
+    // 维护当前TCP的状态
+    TCPState state_{TCPState::State::LISTEN};
+
+    // 当前是否活跃
+    bool active_{1};
+
+    bool rst_{0};
+
+    // time_wait计时
+    uint32_t time_wait_start_{0};
+
+    //! outbound queue lof segments that the TCPConnection wants sent
     std::queue<TCPSegment> _segments_out{};
 
     //! Should the TCPConnection stay active (and keep ACKing)
     //! for 10 * _cfg.rt_timeout milliseconds after both streams have ended,
     //! in case the remote TCPConnection doesn't know we've received its whole stream?
     bool _linger_after_streams_finish{true};
+
+    // 最后一次received时间
+    mutable uint32_t time_last_segment_received_{0};
 
   public:
     //! \name "Input" interface for the writer
@@ -38,9 +52,12 @@ class TCPConnection {
     //! \brief Shut down the outbound byte stream (still allows reading incoming data)
     void end_input_stream();
     //!@}
-
+    void fill_window();
     //! \name "Output" interface for the reader
     //!@{
+    void test_end();
+
+    void set_rst();
 
     //! \brief The inbound byte stream received from the peer
     ByteStream &inbound_stream() { return _receiver.stream_out(); }
@@ -65,9 +82,15 @@ class TCPConnection {
     //! Called when a new segment has been received from the network
     void segment_received(const TCPSegment &seg);
 
+    void send_segment(const TCPSegment &seg);
+
+    void send_segments();
+
+    void fill_queue(std::queue<TCPSegment> &segments_out);
     //! Called periodically when time elapses
     void tick(const size_t ms_since_last_tick);
 
+    void send_rst();
     //! \brief TCPSegments that the TCPConnection has enqueued for transmission.
     //! \note The owner or operating system will dequeue these and
     //! put each one into the payload of a lower-layer datagram (usually Internet datagrams (IP),

@@ -43,13 +43,14 @@ class TCPSender {
     // 已发送但未确认的数据段大小
     uint64_t bytes_in_flight_{0};
 
-    // 标志是否结束
-    bool ack_fin_{0};
-
     // 头部outstanding数据段重传次数
     uint16_t retx_times_{0};
 
+    bool init_isn_{0};
+
   public:
+    // 标志是否结束
+    bool ack_fin_{0};
     //! Initialize a TCPSender
     TCPSender(const size_t capacity = TCPConfig::DEFAULT_CAPACITY,
               const uint16_t retx_timeout = TCPConfig::TIMEOUT_DFLT,
@@ -65,7 +66,7 @@ class TCPSender {
     //!@{
 
     //! \brief A new acknowledgment was received
-    void ack_received(const WrappingInt32 ackno, const uint16_t window_size);
+   bool ack_received(const WrappingInt32 ackno, const uint16_t window_size);
 
     //! \brief Generate an empty-payload segment (useful for creating empty ACK segments)
     void send_empty_segment();
@@ -74,9 +75,8 @@ class TCPSender {
     void fill_window();
 
     //! \brief Notifies the TCPSender of the passage of time
-    void tick(const size_t ms_since_last_tick);
+    bool tick(const size_t ms_since_last_tick);
     //!@}
-
     //! \name Accessors
     //!@{
 
