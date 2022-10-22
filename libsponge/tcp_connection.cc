@@ -47,11 +47,11 @@ void TCPConnection::send_segments(bool should_reply) {
     if (segments_out.empty() && should_reply) {
         _sender.send_empty_segment();
     }
-    if (rst_) {
+    if (rst_ && should_reply) {
         fill_queue(segments_out);
         return;
     }
-    while (!segments_out.empty()) {
+    while (!segments_out.empty() && should_reply) {
         fill_queue(segments_out);
     }
 }
@@ -94,7 +94,7 @@ void TCPConnection::segment_received(const TCPSegment &seg) {
     } else if (state_ == TCPState::State::SYN_RCVD) {
         if (seg.header().rst) {
             state_ = TCPState::State::LISTEN;
-        }else if (seg.header().ack) {
+        } else if (seg.header().ack) {
             _sender.ack_received(seg.header().ackno, seg.header().win);
             state_ = TCPState::State::ESTABLISHED;
         }
@@ -145,9 +145,9 @@ void TCPConnection::segment_received(const TCPSegment &seg) {
             state_ = TCPState::State::TIME_WAIT;
             time_wait_start_ = 0;
         }
-//        else {
-//            fill_window(seg.length_in_sequence_space());
-//        }
+        //        else {
+        //            fill_window(seg.length_in_sequence_space());
+        //        }
 
     } else if (state_ == TCPState::State::CLOSE_WAIT) {
         _sender.ack_received(seg.header().ackno, seg.header().win);
@@ -160,9 +160,9 @@ void TCPConnection::segment_received(const TCPSegment &seg) {
             _linger_after_streams_finish = false;
             state_ = TCPState::State::CLOSED;
         }
-//        else {
-//            fill_window(seg.length_in_sequence_space());
-//        }
+        //        else {
+        //            fill_window(seg.length_in_sequence_space());
+        //        }
     } else if (state_ == TCPState::State::TIME_WAIT) {
         if (seg.header().fin) {
             _sender.ack_received(seg.header().ackno, seg.header().win);
@@ -177,9 +177,9 @@ void TCPConnection::segment_received(const TCPSegment &seg) {
             _segments_out.push(segment);
             _sender.segments_out().pop();
         }
-//        else {
-//            fill_window(seg.length_in_sequence_space());
-//        }
+        //        else {
+        //            fill_window(seg.length_in_sequence_space());
+        //        }
     }
     test_end();
 }
@@ -253,14 +253,16 @@ void TCPConnection::connect() {
 }
 
 void TCPConnection::test_end() {
-    if (_receiver.stream_out().input_ended() && !_sender.stream_in().eof() && _sender.next_seqno_absolute() > 0) {
-        _linger_after_streams_finish = false;
-    } else if (_receiver.stream_out().eof() && _sender.stream_in().eof() && unassembled_bytes() == 0 &&
-               bytes_in_flight() == 0 && TCPState::state_summary(_sender) == TCPSenderStateSummary::FIN_SENT) {
-        if (!_linger_after_streams_finish)
-            active_ = false;
-        else if (time_last_segment_received_ >= 10 * _cfg.rt_timeout)
-            active_ = false;
+    if (_receiver.stream_out().input_ended()) {
+        if (!_sender.stream_in().eof()) {
+            _linger_after_streams_finish = false;
+        }
+
+        else if (_sender.bytes_in_flight() == 0) {
+            if (!_linger_after_streams_finish || time_since_last_segment_received() >= 10 * _cfg.rt_timeout) {
+                active_ = false;
+            }
+        }
     }
 }
 
