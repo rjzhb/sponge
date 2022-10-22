@@ -80,6 +80,11 @@ void TCPConnection::segment_received(const TCPSegment &seg) {
     time_last_segment_received_ = 0;
 
     if (seg.header().rst) {
+        // RST segments without ACKs should be ignored in SYN_SENT
+        if (state_ == TCPState::State::SYN_SENT && !seg.header().ack) {
+            return;
+        }
+        lprintf("在ack中准备调用set_rst\n");
         set_rst();
         return;
     }
@@ -233,10 +238,6 @@ bool TCPConnection::active() const {
 size_t TCPConnection::write(const string &data) {
     // 先写入_sender里面的bytestream
     stringstream ss;
-    lprintf(ss.str().c_str());
-    lprintf("写入数据");
-    lprintf(data.c_str());
-    lprintf("\n");
     size_t write_len = _sender.stream_in().write(std::move(data));
     fill_window(true);
     test_end();
@@ -245,8 +246,9 @@ size_t TCPConnection::write(const string &data) {
 
 //! \param[in] ms_since_last_tick number of milliseconds since the last call to this method
 void TCPConnection::tick(const size_t ms_since_last_tick) {
-    if (state_ == TCPState::State::LISTEN)
+    if (state_ == TCPState::State::LISTEN) {
         return;
+    }
     time_last_segment_received_ += ms_since_last_tick;
 
     stringstream ss;
@@ -351,7 +353,14 @@ void TCPConnection::set_rst() {
     _linger_after_streams_finish = false;
     _sender.stream_in().set_error();
     _receiver.stream_out().set_error();
-    send_segments(true);
+    lprintf("检测状态");
+    lprintf(state().name().c_str());
+    if (state_ != TCPState::State::LISTEN && state_ != TCPState::State::SYN_SENT &&
+        state_ != TCPState::State::SYN_RCVD) {
+        lprintf(state_.name().c_str());
+        lprintf("rst状态，准备发送数据段\n");
+        send_segments(true);
+    }
 }
 
 TCPConnection::~TCPConnection() {
