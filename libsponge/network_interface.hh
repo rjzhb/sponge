@@ -31,6 +31,11 @@
 //! and learns or replies as necessary.
 class NetworkInterface {
   private:
+    struct ARPMapPayload {
+        EthernetAddress ethernet_address_;
+        size_t ttl_;
+    };
+
     //! Ethernet (known as hardware, network-access-layer, or link-layer) address of the interface
     EthernetAddress _ethernet_address;
 
@@ -39,6 +44,10 @@ class NetworkInterface {
 
     //! outbound queue of Ethernet frames that the NetworkInterface wants sent
     std::queue<EthernetFrame> _frames_out{};
+
+    std::unordered_map<uint32_t , ARPMapPayload> ip_mac_map_;
+
+    std::queue<IPv4Datagram> send_queue_;
 
   public:
     //! \brief Construct a network interface with given Ethernet (network-access-layer) and IP (internet-layer) addresses
@@ -56,7 +65,7 @@ class NetworkInterface {
     //! \brief Receives an Ethernet frame and responds appropriately.
 
     //! If type is IPv4, returns the datagram.
-    //! If type is ARP request, learn a mapping from the "sender" fields, and send an ARP reply.
+    //! If type is ARP request, learn a  mapping from the "sender" fields, and send an ARP reply.
     //! If type is ARP reply, learn a mapping from the "sender" fields.
     std::optional<InternetDatagram> recv_frame(const EthernetFrame &frame);
 
