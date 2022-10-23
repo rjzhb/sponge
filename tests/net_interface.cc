@@ -15,7 +15,7 @@ EthernetAddress random_private_ethernet_address() {
     }
     addr.at(0) |= 0x02;  // "10" in last two binary digits marks a private Ethernet address
     addr.at(0) &= 0xfe;
-
+    
     return addr;
 }
 
