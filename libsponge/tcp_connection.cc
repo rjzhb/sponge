@@ -202,11 +202,13 @@ void TCPConnection::segment_received(const TCPSegment &seg) {
 
     } else if (state_ == TCPState::State::LAST_ACK) {
         _sender.ack_received(seg.header().ackno, seg.header().win);
+        
         if (seg.header().ack && _sender.bytes_in_flight() == 0) {
             active_ = false;
             _linger_after_streams_finish = false;
             state_ = TCPState::State::CLOSED;
         }
+
     } else if (state_ == TCPState::State::TIME_WAIT) {
         if (seg.header().fin) {
             _sender.ack_received(seg.header().ackno, seg.header().win);

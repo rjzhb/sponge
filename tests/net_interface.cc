@@ -11,9 +11,9 @@ using namespace std;
 EthernetAddress random_private_ethernet_address() {
     EthernetAddress addr;
     for (auto &byte : addr) {
-        byte = random_device()();  // use a random local Ethernet address
+        byte = random_device()();  // 使用一个随机的MAC地址
     }
-    addr.at(0) |= 0x02;  // "10" in last two binary digits marks a private Ethernet address
+    addr.at(0) |= 0x02;  // "10" 的最后两位二进制位 marks 私有MAC地址
     addr.at(0) &= 0xfe;
     
     return addr;
